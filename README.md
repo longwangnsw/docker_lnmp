@@ -6,8 +6,6 @@ I want to share my ideas and designs about Web-Deploying using Docker with you.
 
 ### Architecture
 
-![Instructure][2]
-
 ![architecture][1]
 
 The whole app is divided into four Containers:
@@ -54,7 +52,6 @@ ubuntu install node
 6. gulp release
 
   [1]: docker_architecture.png
-  [2]: docker_6.png
 
 ### 进一步说明
 
