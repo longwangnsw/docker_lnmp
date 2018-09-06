@@ -1,8 +1,6 @@
 # Introduction
 
-Deploy lnmp(Linux, Nginx, MySQL 5.7, PHP 7.1) using docker.
-
-I want to share my ideas and designs about Web-Deploying using Docker with you.
+Deploy lnmp(Linux, Nginx, MySQL 5.7, PHP 7.1) plus Redis using docker.
 
 ### Architecture
 
@@ -11,14 +9,14 @@ I want to share my ideas and designs about Web-Deploying using Docker with you.
 The whole app is divided into four Containers:
 
 1. Nginx is running in `Nginx` Container, which handles requests and makes responses.
-2. PHP or PHP-FPM (aroud 630M) is put in `PHP-FPM` Container, it retrieves php scripts from host, interprets, executes then responses to Nginx. If necessary, it will connect to `MySQL` as well.
-3. MySQL lies in `MySQL` Container,
-4. Redis lies in `Redis` Container, 
+2. PHP or PHP-FPM (aroud 630M) is put in `PHP-FPM` Container, it retrieves php scripts from host, interprets, executes then responses to Nginx. If necessary, it will connect to `MySQL` and `Redis` as well.
+3. MySQL in `MySQL` Container,
+4. Redis in `Redis` Container, 
 5. 宿主机上nginx/conf.d/*.conf是vhost文件，映射进入了nginx容器。如果有修改，需要docker-compose restart，或者进入nginx这个容器重启nginx。
 6. 宿主机上app目录是给项目用的，这个目录映射进了fpm、nginx容器，注意git clone操作建议在fpm容器内完成
 7. 宿主机上mysql目录是为了数据库持久化，这个目录映射进了mysql容器
 
-Our app scripts are located on host, you can edit files directly without rebuilding/restarting whole images/containers.
+Your project scripts are located on host, you can edit files directly without rebuilding/restarting whole images/containers. But normally host has no php envirenment, so you should do php composer on fpm container.
 
 ### Build and Run
 
@@ -32,14 +30,14 @@ For more operations to containers, please refer to:
 
     $ sudo docker-compose --help
 
-Check out your http://docker-host and have fun :beer:
+Check out http://docker-localhost
 
 ### Deploy any project
 
-1. docker exec enter fpm container; go into app folder, git clone your project such as api_breakable; vi .env
+1. docker exec enter fpm container; go into app folder, git clone your project ; vi .env
 2. docker exec enter fpm container; go into project foler, composer install, etc. (reference composer.json)
-3. docker exec enter fpm container; mysql mysql's container, create database. php artisan migrate(only on fpm container)
-3. go into nginx/con.f folder, modify or new a vhost.conf
+3. docker exec enter fpm container; mysql -h mysql's container, create database. php artisan migrate(only on fpm container)
+3. go into nginx/con.f folder, modify or new a yourvhost.conf
 4. sudo docker-compose restart
 5. if add project more, just go again 1.2.3.4
 
@@ -57,7 +55,7 @@ ubuntu install node
 
 #### 1、较为复杂的是fpm这个容器。基础镜像是php-fpm（版本7.1.21）。在此基础上安装软件。
 
-  gd：因为很多项目需要这个php图形处理工具，虽然我们没有直接用它。同时注意gd需要libfreetype、libjpej
+  gd：因为很多项目需要这个php图形处理工具，虽然我们没有直接用它。同时注意gd需要libfreetype、libjpeg
   
   mcrypt：这个不用多说
   
@@ -78,7 +76,7 @@ ubuntu install node
   Invoke-WebRequest "https://github.com/docker/compose/releases/download/1.22.0/docker-compose-Windows-x86_64.exe" -UseBasicParsing -OutFile $Env:ProgramFiles\docker\docker-compose.exe
 ```
 
-#### 3、window 10在运行docker-compose时有一个share权限的问题。可以通过鼠标点点点完成目录共享（share）
+#### 3、window 10在运行docker-compose时有一个share权限的问题。
 
   方法1、右下角找docker，右键点setting，找到shared Driver
   
