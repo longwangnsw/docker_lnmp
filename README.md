@@ -10,8 +10,8 @@ The whole app is divided into four Containers:
 
 1. Nginx is running in `Nginx` Container, which handles requests and makes responses.
 2. PHP or PHP-FPM (aroud 630M) is put in `PHP-FPM` Container, it retrieves php scripts from host, interprets, executes then responses to Nginx. If necessary, it will connect to `MySQL` and `Redis` as well.
-3. MySQL in `MySQL` Container,
-4. Redis in `Redis` Container, 
+3. MySQL in `MySQL` Container, why open 3306 port to host is easy for debug.
+4. Redis in `Redis` Container, why open 6379 port to host is easy for debug.
 5. 宿主机上nginx/conf.d/*.conf是vhost文件，映射进入了nginx容器。如果有修改，需要docker-compose restart，或者进入nginx这个容器重启nginx。
 6. 宿主机上app目录是给项目用的，这个目录映射进了fpm、nginx容器，注意git clone操作建议在fpm容器内完成
 7. 宿主机上mysql目录是为了数据库持久化，这个目录映射进了mysql容器
