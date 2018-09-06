@@ -78,7 +78,7 @@ ubuntu install node
 
 #### 3、window 10在运行docker-compose时有一个share权限的问题。
 
-  方法1、右下角找docker，右键点setting，找到shared Driver
+  方法1、右下角找docker，右键点setting，找到shared Driver（需要用户名/密码，如果域用户不行试试创建一个本地用户并加入Administrator）
   
   方法2、也可以使用powershell命令：
 ```
