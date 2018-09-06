@@ -49,7 +49,7 @@ ubuntu install node
 5. npm install
 6. gulp release
 
-  [1]: docker_architecture.png
+  [1]: docker_lnmp_architecture.png
 
 ### 进一步说明
 
