@@ -76,7 +76,7 @@ ubuntu install node
   Invoke-WebRequest "https://github.com/docker/compose/releases/download/1.22.0/docker-compose-Windows-x86_64.exe" -UseBasicParsing -OutFile $Env:ProgramFiles\docker\docker-compose.exe
 ```
 
-#### 3、window 10在运行docker-compose时有一个share权限的问题。
+#### 3、window 10在运行docker有volume映射的情况下，有share权限的问题。
 
   方法1、右下角找docker，右键点setting，找到shared Driver（需用户名/密码，如果域用户不行，创建本地用户并加Admin）
   
