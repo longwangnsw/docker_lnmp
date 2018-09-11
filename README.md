@@ -98,7 +98,7 @@ ubuntu install node
 
 #### 5、四个容器之间自动完成了hosts设置（注意不要使用ip地址）。
 
-  nginx访问fpm使用`DOCKER_PHP_FPM`，fpm访问mysql使用`DOCKER_MYSQL`，fpm访问redis使用`DOCKER_REDIS`。
+  nginx访问fpm使用`DOCKER_PHP_FPM`，fpm访问mysql使用`DOCKER_MYSQL`，fpm访问redis使用`DOCKER_REDIS`。见yml文件link域
 
   请看各个容器/etc/hosts，vhost中，我们用DOCKER_PHP_FPM:9000调用fpm
 
