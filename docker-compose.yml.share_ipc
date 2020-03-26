@@ -1,0 +1,89 @@
+version: '2.4'
+services:
+ 
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    extra_hosts:
+      - "api_post:192.168.66.200"
+      - "service_email_test.acy.com:192.168.66.200"
+      - "email.finlogixtest.com:192.168.66.31"
+      - "email_service.finlogixtest.com:192.168.66.113"
+      - "apirank.finlogixtest.com:192.168.66.113"
+      - "apicrm:192.168.66.188"
+      - "api_webinar_test:192.168.66.186"
+    ports:
+      - "80:80"
+      - "3306:3306"
+      # - "9200:9200"
+      # - "443:443"
+    volumes:
+      # app
+      - ./app:/var/www/html
+      # nginx configs
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d/:/etc/nginx/conf.d/:ro
+      # certificates
+      # - ./nginx/ca/server.crt/:/etc/nginx/server.crt:ro
+      # - ./nginx/ca/server.key/:/etc/nginx/server.key:ro
+    ipc: shareable
+    networks:
+      app_net:
+        ipv4_address: 172.18.18.18
+  
+  php-fpm:
+#    build: ./php-fpm
+    image: c7git-registry.acy.svr/tools/docker_lnmp_redis:img-docker-php72-node10
+    container_name: php-fpm
+    volumes:
+      - ./app:/var/www/html
+      - ./supervisor/conf.d/:/etc/supervisor/conf.example/:ro
+      # Your php.ini
+      - ./php-fpm/php.ini-production:/usr/local/etc/php/php.ini:ro
+    depends_on:
+      nginx:
+        condition: service_started
+    ipc: "container:nginx"
+    network_mode: "service:nginx"
+  
+  mysql:
+    image: mysql:5.7
+    container_name: mysql
+    volumes:
+      # NOTE: your data will be stored in ./mysql
+      - ./mysql:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    depends_on:
+      nginx:
+        condition: service_started
+    ipc: "container:nginx"
+    network_mode: "service:nginx"
+  
+  redis:
+    image: redis
+    container_name: redis
+    depends_on:
+      nginx:
+        condition: service_started
+    ipc: "container:nginx"
+    network_mode: "service:nginx"
+
+  elasticsearch:
+    image: elasticsearch:6.8.6
+    volumes:
+      - ./elastic:/usr/share/elasticsearch/data
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+    ipc: "container:nginx"
+    network_mode: "service:nginx"    
+
+networks:
+  app_net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: 172.18.18.0/24
+        gateway: 172.18.18.1
